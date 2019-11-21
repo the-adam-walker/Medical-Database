@@ -1,5 +1,5 @@
 import mysql.connector
-
+#test
 def tryLogin(logUsername, logPassword):
     try:
         mydb = mysql.connector.connect(
@@ -10,7 +10,7 @@ def tryLogin(logUsername, logPassword):
             unix_socket='/var/lib/mysql/mysql.sock'
         )
         cursor = mydb.cursor()
-        cursor.execute("SELECT First_Name, Surname, username, password from Patients where username = \'" 
+        cursor.execute("SELECT First_Name, Surname, username, password from Patients where username = \'"
             + logUsername + "\' and password = \'" + logPassword + "\'")
         rows = cursor.fetchall()
         if len(rows) == 1:
@@ -20,7 +20,7 @@ def tryLogin(logUsername, logPassword):
             return -2
             pass
 
-        cursor.execute("SELECT * from Staff where username = \'" 
+        cursor.execute("SELECT * from Staff where username = \'"
             + logUsername + "\' and password = \'" + logPassword + "\'")
         rows = cursor.fetchall()
         if len(rows) == 1:
@@ -38,7 +38,7 @@ def tryLogin(logUsername, logPassword):
             mydb.close()
 
 
-def createPatientProfile(ActorPermissions, Gender, First_Name, Surname, DOB, Height, Weight, BloodType, Phone_Number, 
+def createPatientProfile(ActorPermissions, Gender, First_Name, Surname, DOB, Height, Weight, BloodType, Phone_Number,
     State, City, Zip, Address, Email, Username, Password):
     if (ActorPermissions != 'Admin'):
         return -1
