@@ -1,6 +1,6 @@
 import mysql.connector
 
-
+# this is a test
 """
 This is the class that stores the users information, mainly used for permissions
 """
