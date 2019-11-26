@@ -1,6 +1,18 @@
 import mysql.connector
 
-# this is a test
+
+
+"""Single Global Connection to the SQL Server"""
+
+mydb = mysql.connector.connect(
+    host='localhost',
+    user='CONNECTOR',
+    password='password',
+    database='HospitalRecords',
+    unix_socket='/tmp/mysql.sock'
+)
+cursor = mydb.cursor()
+
 """
 This is the class that stores the users information, mainly used for permissions
 """
@@ -24,40 +36,27 @@ if there are multiple matches, a -2 is returned
 """
 
 def tryLogin(logUsername, logPassword):
-    try:
-        mydb = mysql.connector.connect(
-            host='prclab1.erau.edu',
-            user='pietzd',
-            password='plus4db',
-            database='pietzd_db',
-            unix_socket='/var/lib/mysql/mysql.sock'
-        )
-        cursor = mydb.cursor()
-        cursor.execute("SELECT First_Name, Surname, username, password from Patients where username = \'"
-            + logUsername + "\' and password = \'" + logPassword + "\'")
-        rows = cursor.fetchall()
-        if len(rows) == 1:
-            return ['Patient',rows[0][0], rows[0][1], rows[0][2],
-            rows[0][3]]
-        elif len(rows) > 1:
-            return -2
-            pass
-        cursor.execute("SELECT * from Staff where username = \'"
-            + logUsername + "\' and password = \'" + logPassword + "\'")
-        rows = cursor.fetchall()
-        if len(rows) == 1:
-            return [rows[0][2],rows[0][0], rows[0][1], rows[0][3]]
-        elif len(rows) > 1:
-            return -2
-            pass
-        return -1
 
-    except mysql.connector.Error as error:
-        print(error)
-    finally:
-        if mydb.is_connected():
-            cursor.close()
-            mydb.close()
+    cursor.execute("SELECT First_Name, Surname, username, password from Patients where username = \'"
+        + logUsername + "\' and password = \'" + logPassword + "\'")
+    rows = cursor.fetchall()
+    if len(rows) == 1:
+        return ['Patient',rows[0][0], rows[0][1], rows[0][2],
+        rows[0][3]]
+    elif len(rows) > 1:
+        return -2
+        pass
+    cursor.execute("SELECT * from Staff where username = \'"
+        + logUsername + "\' and password = \'" + logPassword + "\'")
+    rows = cursor.fetchall()
+    if len(rows) == 1:
+        return [rows[0][2],rows[0][0], rows[0][1], rows[0][3]]
+    elif len(rows) > 1:
+        return -2
+        pass
+    return -1
+
+
 
 """This function does not work yet but the intent is it takes the Actor, and patient info, and if the actor
 has sufficeint permissions, an entry is added to the Patient table will the criteria specified.
@@ -68,15 +67,7 @@ def createPatientProfile(Actor, Gender, First_Name, Surname, DOB, Height, Weight
     if (Actor.Permissions != 'Admin'):
         return -1
     try:
-        mydb = mysql.connector.connect(
-            host='prclab1.erau.edu',
-            user='pietzd',
-            password='plus4db',
-            database='pietzd_db',
-            unix_socket='/var/lib/mysql/mysql.sock'
-        )
         mydb.autocommit = False
-        cursor = mydb.cursor()
         add_patient = ("INSERT INTO Patients (Gender, First_Name, Surname, DOB, Height, Weight, bloodtype, Phone_Number, State, City, Zipcode, Address, Email, username, password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
         data_patient = (Gender, First_Name, Surname, DOB, Height, Weight, BloodType, Phone_Number, State, City, Zip, Address, Email, Username, Password)
         cursor.execute(add_patient, data_patient)
@@ -96,40 +87,25 @@ not check for patients with the same name, this can be added later if we want, t
 """
 
 def getPatientUserName(First_Name, Last_Name):
-    try:
-        mydb = mysql.connector.connect(
-            host='prclab1.erau.edu',
-            user='pietzd',
-            password='plus4db',
-            database='pietzd_db',
-            unix_socket='/var/lib/mysql/mysql.sock'
-        )
-        cursor = mydb.cursor()
-        cursor.execute("SELECT First_Name, Surname, username from Patients where First_Name = \'"
-            + First_Name + "\' and Surname = \'" + Last_Name + "\'")
-        rows = cursor.fetchall()
-        if len(rows) == 1:
-            return rows[0][2]
-        elif len(rows) > 1:
-            return -2
-            pass
+    cursor.execute("SELECT First_Name, Surname, username from Patients where First_Name = \'"
+        + First_Name + "\' and Surname = \'" + Last_Name + "\'")
+    rows = cursor.fetchall()
+    if len(rows) == 1:
+        return rows[0][2]
+    elif len(rows) > 1:
+        return -2
+        pass
 
-        cursor.execute("SELECT * from Staff where username = \'"
-            + logUsername + "\' and password = \'" + logPassword + "\'")
-        rows = cursor.fetchall()
-        if len(rows) == 1:
-            return [rows[0][2],rows[0][0], rows[0][1], rows[0][3]]
-        elif len(rows) > 1:
-            return -2
-            pass
-        return -1
+    cursor.execute("SELECT * from Staff where username = \'"
+        + logUsername + "\' and password = \'" + logPassword + "\'")
+    rows = cursor.fetchall()
+    if len(rows) == 1:
+        return [rows[0][2],rows[0][0], rows[0][1], rows[0][3]]
+    elif len(rows) > 1:
+        return -2
+        pass
+    return -1
 
-    except mysql.connector.Error as error:
-        print(error)
-    finally:
-        if mydb.is_connected():
-            cursor.close()
-            mydb.close()
 
 """
 This function takes an Actor, and patient First_Name, and patient Last_name
@@ -138,29 +114,14 @@ then the function returns the row of that patient in the database
 """
 
 def getPatientData(Actor, First_Name, Last_Name):
+
     PatientUser = getPatientUserName(First_Name, Last_Name);
     if ((Actor.Permissions == 'Nurse') or (Actor.Permissions == 'Doctor') or
         ((Actor.Permissions == 'Patient') and (Actor.Username == Patient))):
-        try:
-            mydb = mysql.connector.connect(
-                host='prclab1.erau.edu',
-                user='pietzd',
-                password='plus4db',
-                database='pietzd_db',
-                unix_socket='/var/lib/mysql/mysql.sock'
-            )
-            cursor = mydb.cursor()
-            read_patient = ("SELECT * from Patients where username = \'" + PatientUser + "\'")
-            cursor.execute(read_patient)
-            rows = cursor.fetchall()
-            print(rows)
-        except mysql.connector.Error as error:
-            print(error)
-        finally:
-            if mydb.is_connected():
-                cursor.close()
-                mydb.close()
-                pass
+        read_patient = ("SELECT * from Patients where username = \'" + PatientUser + "\'")
+        cursor.execute(read_patient)
+        rows = cursor.fetchall()
+        print(rows)
     else:
         return -1
         pass
@@ -174,9 +135,9 @@ def main():
     """
 
     print('Please Enter Username:')
-    user = raw_input()
+    user = input()
     print('Please Enter Password:')
-    passw = raw_input()
+    passw = input()
     #Attempt to login
     res = tryLogin(user,passw)
 
@@ -194,7 +155,7 @@ def main():
         pass
 
     createPatientProfile(Actor, 'male','Virgil2','Futral2','9/16/1956','181','96.3','B+','619-216-8974','CA','Chula Vista','92010','4296 Holden Street','VirgilRFutral@armyspy.com','Abinimbed','iePhi7Ohr')
-    getPatientData(Actor, 'Daryl', 'Stokes')
+    #getPatientData(Actor, 'Daryl', 'Stokes')
 
 
 

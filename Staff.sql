@@ -10,3 +10,4 @@ CREATE TABLE Staff (
 
 insert into Staff values('Daniel', 'Pietz', 'Janitor', 'dpietz', 'cutie1');
 insert into Staff values('Andrea', 'Gray', 'Admin', 'graya17', 'IAmVegan');
+insert into Staff values('Adam', 'Walker', 'Doctor', 'adamwalker', '2001');
