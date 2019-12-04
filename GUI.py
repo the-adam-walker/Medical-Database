@@ -1,7 +1,7 @@
 import sys
 import mysql.connector
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget,QLabel, QPushButton, QAction, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget,QLabel,QPushButton, QAction, QLineEdit, QMessageBox
 from Login import *
 
 """Single Global Connection to the SQL Server"""
@@ -134,12 +134,12 @@ class Login(QtWidgets.QWidget):
 
         if res == -1:
             print("Incorrect Username/Password")
-            QMessageBox.question(self, 'Welcome',"ERROR: Incorrect Username/Password. " +
+            QMessageBox.critical(self, 'Welcome',"ERROR: Incorrect Username/Password. " +
             "Please contact your system administrator if you believe this is a mistake", QMessageBox.Ok, QMessageBox.Ok)
             self.textbox1.setText("")
 
         else:
-            QMessageBox.question(self, 'Welcome', 'Welcome, ' + res[1] + ' '
+            QMessageBox.noicon(self, 'Welcome', 'Welcome, ' + res[1] + ' '
             + res[2]+ '!', QMessageBox.Ok, QMessageBox.Ok)
             self.textbox1.setText("")
             self.switch_window.emit()
