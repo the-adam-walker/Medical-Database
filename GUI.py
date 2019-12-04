@@ -134,13 +134,15 @@ class Login(QtWidgets.QWidget):
 
         if res == -1:
             print("Incorrect Username/Password")
+            QMessageBox.question(self, 'Welcome',"ERROR: Incorrect Username/Password. " +
+            "Please contact your system administrator if you believe this is a mistake", QMessageBox.Ok, QMessageBox.Ok)
+            self.textbox1.setText("")
+
         else:
             QMessageBox.question(self, 'Welcome', 'Welcome, ' + res[1] + ' '
             + res[2]+ '!', QMessageBox.Ok, QMessageBox.Ok)
             self.textbox1.setText("")
-            print("oof")
             self.switch_window.emit()
-            print("after oof")
             pass
 
 
