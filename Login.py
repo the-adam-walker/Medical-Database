@@ -36,7 +36,7 @@ if there are multiple matches, a -2 is returned
 """
 
 def tryLogin(logUsername, logPassword):
-
+    print("Attempting to Login")
     cursor.execute("SELECT First_Name, Surname, username, password from Patients where username = \'"
         + logUsername + "\' and password = \'" + logPassword + "\'")
     rows = cursor.fetchall()
