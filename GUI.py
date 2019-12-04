@@ -1,9 +1,10 @@
 import sys
 import mysql.connector
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget,QLabel,QPushButton, QAction, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget,QLabel,QPushButton, QAction, QLineEdit, QMessageBox, QDesktopWidget
 from Login import *
-
+import qdarkstyle
+import os
 """Single Global Connection to the SQL Server"""
 
 mydb = mysql.connector.connect(
@@ -174,9 +175,10 @@ class Login(QtWidgets.QWidget):
         self.title = 'Login Window'
         self.left = 100
         self.top = 100
-        self.width = 400
-        self.height = 400
+        self.width = 288
+        self.height = 180
         self.initUI()
+
 
     def initUI(self):
         attempts = 0
@@ -184,28 +186,29 @@ class Login(QtWidgets.QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
 
         label = QLabel('Username', self)
-        label.move(20,20)
+        center  = (QDesktopWidget().availableGeometry().center())
+        label.move(center.x()-140,0.8*center.y()-50-50)
 
         self.textbox = QLineEdit(self)
-        self.textbox.move(20, 50)
         self.textbox.resize(280,40)
+        self.textbox.move(center.x()-140,0.8*center.y() - 20-50)
 
         label = QLabel('Password', self)
-        label.move(20,120)
+        label.move(center.x()-140,center.y()-50-50)
 
         self.textbox1 = QLineEdit(self)
         self.textbox1.setEchoMode(QLineEdit.Password)
-        self.textbox1.move(20, 150)
         self.textbox1.resize(280,40)
+        self.textbox1.move(center.x()-140,center.y() - 20-50)
 
         self.button = QPushButton('Login', self)
-        self.button.move(20,200)
         self.button.resize(140, 30)
+        self.button.move(center.x()-70,center.y() + 40-50)
 
 
+        self.showMaximized()
         self.button.clicked.connect(self.on_click, attempts)
         self.show()
-
 
 
     def on_click(self, attempts):
@@ -317,6 +320,9 @@ class Controller:
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    os.environ['PYQTGRAPH_QT_LIB']="PyQt5"
+    os.environ['QT_API']="pyqt5"
+    app.setStyleSheet(qdarkstyle.load_stylesheet_from_environment())
     controller = Controller()
     controller.show_login()
     sys.exit(app.exec_())
