@@ -19,8 +19,10 @@ cursor = mydb.cursor()
 This is the class that stores the users information, mainly used for permissions
 """
 
+Actor = None
 
-class MainWindow(QtWidgets.QWidget):
+
+"""class MainWindow(QtWidgets.QWidget):
 
     switch_window = QtCore.pyqtSignal(str)
 
@@ -51,9 +53,98 @@ class MainWindow(QtWidgets.QWidget):
 
         self.button = QPushButton('Other', self)
         self.button.move(100,260)
+        self.button.resize(200, 50)"""
+
+
+
+
+class DoctorWindow(QtWidgets.QWidget):
+
+    switch_window = QtCore.pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'Doctor/Nurse Access'
+        self.left = 100
+        self.top = 100
+        self.width = 400
+        self.height = 400
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.button = QPushButton('Doctor/Nurse', self)
+        self.button.move(100,50)
         self.button.resize(200, 50)
+pass
 
+class AdminWindow(QtWidgets.QWidget):
 
+    switch_window = QtCore.pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'Admin Access'
+        self.left = 100
+        self.top = 100
+        self.width = 400
+        self.height = 400
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.button = QPushButton('Admin', self)
+        self.button.move(100,50)
+        self.button.resize(200, 50)
+pass
+
+class PatientWindow(QtWidgets.QWidget):
+
+    switch_window = QtCore.pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'Patient Access'
+        self.left = 100
+        self.top = 100
+        self.width = 400
+        self.height = 400
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.button = QPushButton('Patient', self)
+        self.button.move(100,50)
+        self.button.resize(200, 50)
+pass
+
+class OtherWindow(QtWidgets.QWidget):
+
+    switch_window = QtCore.pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.title = 'Low Access'
+        self.left = 100
+        self.top = 100
+        self.width = 400
+        self.height = 400
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle(self.title)
+        self.setGeometry(self.left, self.top, self.width, self.height)
+
+        self.button = QPushButton(Actor.Permissions, self)
+        self.button.move(100,50)
+        self.button.resize(200, 50)
+pass
 
 class WindowTwo(QtWidgets.QWidget):
 
@@ -139,7 +230,8 @@ class Login(QtWidgets.QWidget):
             self.textbox1.setText("")
 
         else:
-            QMessageBox.noicon(self, 'Welcome', 'Welcome, ' + res[1] + ' '
+            globals()["Actor"] = ActorC(res[1], res[2], res[3], res[0])
+            QMessageBox.information(self, 'Welcome', 'Welcome, ' + res[1] + ' '
             + res[2]+ '!', QMessageBox.Ok, QMessageBox.Ok)
             self.textbox1.setText("")
             self.switch_window.emit()
@@ -170,11 +262,49 @@ class Controller:
 
     def show_login(self):
         self.login = Login()
-        self.login.switch_window.connect(self.show_main)
+
+        self.login.switch_window.connect(self.switchScreen)
         self.login.show()
 
-    def show_main(self):
-        self.window = MainWindow()
+    def switchScreen(self):
+        print(Actor)
+
+        if Actor.Permissions == "Doctor" or Actor.Permissions == "Nurse":
+            self.show_doctor()
+        elif Actor.Permissions == "Admin":
+            self.show_admin()
+        elif Actor.Permissions == "Patient":
+            self.show_patient()
+        else:
+            self.show_other()
+            pass
+
+
+        """self.window = MainWindow()
+        self.window.switch_window.connect(self.show_window_two)
+        self.login.close()
+        self.window.show()"""
+
+    def show_doctor(self):
+        self.window = DoctorWindow()
+        self.window.switch_window.connect(self.show_window_two)
+        self.login.close()
+        self.window.show()
+
+    def show_admin(self):
+        self.window = AdminWindow()
+        self.window.switch_window.connect(self.show_window_two)
+        self.login.close()
+        self.window.show()
+
+    def show_patient(self):
+        self.window = PatientWindow()
+        self.window.switch_window.connect(self.show_window_two)
+        self.login.close()
+        self.window.show()
+
+    def show_other(self):
+        self.window = OtherWindow()
         self.window.switch_window.connect(self.show_window_two)
         self.login.close()
         self.window.show()

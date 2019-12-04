@@ -117,7 +117,7 @@ def getPatientData(Actor, First_Name, Last_Name):
 
     PatientUser = getPatientUserName(First_Name, Last_Name);
     if ((Actor.Permissions == 'Nurse') or (Actor.Permissions == 'Doctor') or
-        ((Actor.Permissions == 'Patient') and (Actor.Username == Patient))):
+        ((Actor.Permissions == 'Patient') and (Actor.Username == PatientUser))):
         read_patient = ("SELECT * from Patients where username = \'" + PatientUser + "\'")
         cursor.execute(read_patient)
         rows = cursor.fetchall()
