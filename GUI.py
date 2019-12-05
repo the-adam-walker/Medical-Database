@@ -75,10 +75,10 @@ class DoctorWindow(QtWidgets.QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-
         self.button = QPushButton('Doctor/Nurse', self)
         self.button.move(100,50)
         self.button.resize(200, 50)
+        self.showMaximized()
 pass
 
 class AdminWindow(QtWidgets.QWidget):
@@ -97,10 +97,10 @@ class AdminWindow(QtWidgets.QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-
         self.button = QPushButton('Admin', self)
         self.button.move(100,50)
         self.button.resize(200, 50)
+        self.showMaximized()
 pass
 
 class PatientWindow(QtWidgets.QWidget):
@@ -177,6 +177,7 @@ class Login(QtWidgets.QWidget):
         self.top = 100
         self.width = 288
         self.height = 180
+        self.attempts = 0
         self.initUI()
 
 
@@ -210,6 +211,9 @@ class Login(QtWidgets.QWidget):
         self.button.clicked.connect(self.on_click, attempts)
         self.show()
 
+    def keyPressEvent(self, event):
+            if event.key() == QtCore.Qt.Key_Return:
+                self.on_click(self.attempts)
 
     def on_click(self, attempts):
         patientTable = ('Gender','First_Name','Surname','DOB','Height','Weight',
