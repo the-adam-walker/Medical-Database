@@ -120,6 +120,18 @@ def getPatientData(Actor, First_Name, Last_Name):
         return -1
         pass
 
+def getPatientChart(Actor, First_Name, Last_Name):
+    PatientUser = getPatientUserName(First_Name, Last_Name);
+    if ((Actor.Permissions == 'Nurse') or (Actor.Permissions == 'Doctor') or
+        ((Actor.Permissions == 'Patient') and (Actor.Username == PatientUser))):
+        read_patient = ("SELECT * from Charts where First_Name = \'" + First_Name + "\' and Surname = \'" + Last_Name + "\'")
+        cursor.execute(read_patient)
+        rows = cursor.fetchall()
+        print(rows)
+        return rows
+    else:
+        return -1
+        pass
 
 
 def main():
@@ -148,8 +160,9 @@ def main():
         print("Permission Level:  " + Actor.Permissions)
         pass
 
-    createPatientProfile(Actor, 'male','Virgil2','Futral2','9/16/1956','181','96.3','B+','619-216-8974','CA','Chula Vista','92010','4296 Holden Street','VirgilRFutral@armyspy.com','Abinimbed','iePhi7Ohr')
-    #getPatientData(Actor, 'Daryl', 'Stokes')
+
+    
+
 
 
 
