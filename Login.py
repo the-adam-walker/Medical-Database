@@ -58,7 +58,7 @@ def tryLogin(logUsername, logPassword):
 
 
 
-"""This function does not work yet but the intent is it takes the Actor, and patient info, and if the actor
+"""This function does work yet but the intent is it takes the Actor, and patient info, and if the actor
 has sufficeint permissions, an entry is added to the Patient table will the criteria specified.
 """
 
@@ -66,19 +66,12 @@ def createPatientProfile(Actor, Gender, First_Name, Surname, DOB, Height, Weight
     State, City, Zip, Address, Email, Username, Password):
     if (Actor.Permissions != 'Admin'):
         return -1
-    try:
-        mydb.autocommit = False
-        add_patient = ("INSERT INTO Patients (Gender, First_Name, Surname, DOB, Height, Weight, bloodtype, Phone_Number, State, City, Zipcode, Address, Email, username, password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
-        data_patient = (Gender, First_Name, Surname, DOB, Height, Weight, BloodType, Phone_Number, State, City, Zip, Address, Email, Username, Password)
-        cursor.execute(add_patient, data_patient)
-        mydb.commit()
-        mydb.autocommit = True
-    except mysql.connector.Error as error:
-        print(error)
-    finally:
-        if mydb.is_connected():
-            cursor.close()
-            mydb.close()
+    mydb.autocommit = False
+    add_patient = ("INSERT INTO Patients (Gender, First_Name, Surname, DOB, Height, Weight, Blood_Type, Phone_Number, State, City, Zipcode, Address, Email, username, password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    data_patient = (Gender, First_Name, Surname, DOB, Height, Weight, BloodType, Phone_Number, State, City, Zip, Address, Email, Username, Password)
+    cursor.execute(add_patient, data_patient)
+    mydb.commit()
+    mydb.autocommit = True
 
 """
 This function takes a First and Last name and searches the patient table to find the username associated. It will
@@ -117,11 +110,12 @@ def getPatientData(Actor, First_Name, Last_Name):
 
     PatientUser = getPatientUserName(First_Name, Last_Name);
     if ((Actor.Permissions == 'Nurse') or (Actor.Permissions == 'Doctor') or
-        ((Actor.Permissions == 'Patient') and (Actor.Username == PatientUser))):
+        ((Actor.Permissions == 'Patient') and (Actor.Username == PatientUser)) or (Actor.Permissions == 'Admin')):
         read_patient = ("SELECT * from Patients where username = \'" + PatientUser + "\'")
         cursor.execute(read_patient)
         rows = cursor.fetchall()
         print(rows)
+        return rows
     else:
         return -1
         pass
